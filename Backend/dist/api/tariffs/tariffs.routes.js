@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { getAllTariffs, getTariffById, createTariff, updateTariff, deleteTariff, assignTariffToCharger, removeTariffFromCharger, getTariffChargers, } from "./tariffs.controller.js";
+const router = Router();
+router.get("/", getAllTariffs);
+router.get("/:id", getTariffById);
+router.post("/", createTariff);
+router.put("/:id", updateTariff);
+router.delete("/:id", deleteTariff);
+router.post("/:id/chargers/:chargerId", assignTariffToCharger);
+router.delete("/:id/chargers/:chargerId", removeTariffFromCharger);
+router.get("/:id/chargers", getTariffChargers);
+export default router;

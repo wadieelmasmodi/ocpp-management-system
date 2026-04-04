@@ -1,0 +1,113 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { AppShell } from "@/components/layout/AppShell";
+import { api } from "@/lib/api";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, Edit, CreditCard, Mail, Phone, Building, MapPin } from "lucide-react";
+import { RfidSessionHistory } from "@/components/rfid/RfidSessionHistory";
+
+export default function RfidDetailPage() {
+  const { id } = useParams();
+  const [tag, setTag] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTag = async () => {
+      try {
+        const response = await api.get(`/rfid/${id}`);
+        setTag(response.data);
+      } catch (error) {
+        console.error("Failed to fetch RFID details", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (id) fetchTag();
+  }, [id]);
+
+  if (isLoading) return <AppShell><div className="p-8">Loading tag details...</div></AppShell>;
+  if (!tag) return <AppShell><div className="p-8 text-red-500">Tag not found</div></AppShell>;
+
+  return (
+    <AppShell>
+      <div className="mb-6 flex items-center justify-between">
+        <div className="space-y-4">
+          <Link href="/rfid">
+            <Button variant="ghost" size="sm" className="-ml-4 text-muted-foreground">
+              <ChevronLeft className="mr-2 h-4 w-4" /> Back to RFID Tags
+            </Button>
+          </Link>
+          <div className="flex items-center gap-4">
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <CreditCard className="h-6 w-6 text-primary" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight font-mono">{tag.rfid_tag}</h1>
+            <Badge variant="outline" className={tag.active ? 'text-green-500 bg-green-500/10' : 'bg-muted'}>
+              {tag.active ? 'AUTHORIZED' : 'BLOCKED'}
+            </Badge>
+          </div>
+          <p className="text-muted-foreground">Assigned to: <span className="font-medium text-foreground">{tag.name}</span></p>
+        </div>
+        <Link href={`/rfid/${id}/edit`}>
+          <Button>
+            <Edit className="mr-2 h-4 w-4" /> Edit Tag
+          </Button>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle>Holder Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {tag.email && (
+              <div className="flex items-center gap-3">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">{tag.email}</span>
+              </div>
+            )}
+            {tag.phone && (
+              <div className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">{tag.phone}</span>
+              </div>
+            )}
+            {tag.company_name && (
+              <div className="flex items-center gap-3">
+                <Building className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">{tag.company_name}</span>
+              </div>
+            )}
+            {tag.address && (
+              <div className="flex items-start gap-3">
+                <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                <span className="text-sm">{tag.address}</span>
+              </div>
+            )}
+            
+            <div className="pt-4 border-t mt-4">
+              <p className="text-xs text-muted-foreground mb-1">Account Type</p>
+              <Badge variant="secondary" className="capitalize">{tag.type}</Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-2">
+          <CardHeader>
+            <CardTitle>Charging History</CardTitle>
+            <CardDescription>Recent sessions authenticated with this tag</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RfidSessionHistory rfidUserId={tag.rfid_user_id} />
+          </CardContent>
+        </Card>
+      </div>
+    </AppShell>
+  );
+}
