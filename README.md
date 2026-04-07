@@ -27,9 +27,11 @@
 > **Don't want to set things up locally?**
 > You can explore a fully working instance of this CSMS — hosted by Savekar — at:
 >
-> ### 👉 [csms.savekar.com](https://csms.savekar.com)
+> ### 👉 [csms.savekar.com](https://csms.savekar.com/register-partner)
 >
 > This cloud-hosted platform runs the exact same codebase and is a great way to evaluate the system before deploying it yourself.
+>
+> *If you need help signing up for the demo, please visit this link - [Free Trial Tutorial](https://www.savekar.com/ocpp-cms/free-trial-tutorial)*
 
 ---
 
