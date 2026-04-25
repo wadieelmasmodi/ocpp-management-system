@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=file:/app/data/dev.db
+      - PORT=3000
+      - OCPP_PORT=9220
+      - OCPP_LOG_WS_PORT=3001
+      - JWT_SECRET=super_secret_for_production_please_change
+    volumes:
+      - ocpp_backend_data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=https://evcharging.enegum.earth/api
+      - NEXT_PUBLIC_WS_URL=wss://evcharging.enegum.earth:9220
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+volumes:
+  ocpp_backend_data:

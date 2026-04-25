@@ -84,7 +84,8 @@ export function OcppLogViewer() {
       wsHost = window.location.hostname;
     }
     
-    const wsUrl = `ws://${wsHost}:3001`;
+    // Utilize the environment variable if present, else fallback to standard dev port
+    const wsUrl = process.env.NEXT_PUBLIC_WS_LOGS_URL || `ws://${wsHost}:3001`;
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
