@@ -8,7 +8,8 @@ RUN npm install
 COPY . .
 
 # Environment variables needed for build can be set here or via Coolify
-ENV NEXT_PUBLIC_API_URL=https://evcharging.enegum.earth/api
+ENV NEXT_PUBLIC_API_URL=https://api.evcharging.energum.earth
+ENV NEXT_PUBLIC_WS_LOGS_URL=wss://ws.evcharging.energum.earth
 
 RUN npm run build
 
