@@ -108,6 +108,7 @@ export function OcppLogViewer() {
     };
 
     socket.onerror = (error) => {
+      if ((socket as any).isIntentionalClose) return;
       console.error('WebSocket error:', error);
       setIsLoading(false);
     };
@@ -117,12 +118,15 @@ export function OcppLogViewer() {
     };
 
     setWs(socket);
+    // Attach isIntentionalClose to the socket object so the cleanup function can set it
+    (socket as any).isIntentionalClose = false;
     return socket;
   };
 
   useEffect(() => {
     const socket = connectWebSocket();
     return () => {
+      (socket as any).isIntentionalClose = true;
       if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
         socket.close();
       }
