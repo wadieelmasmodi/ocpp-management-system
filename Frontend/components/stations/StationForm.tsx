@@ -29,7 +29,7 @@ const stationSchema = z.object({
 type StationFormValues = z.infer<typeof stationSchema>;
 
 interface StationFormProps {
-  initialData?: StationFormValues & { id: number };
+  initialData?: StationFormValues & { id: number; owner_id: number };
 }
 
 export function StationForm({ initialData }: StationFormProps) {
